@@ -1,4 +1,4 @@
-var each = require('lodash.forEach');
+var each = require('lodash.foreach');
 var slash = require('slasher');
 var globject = require('globject');
 var url = require('fast-url-parser');
