@@ -1,6 +1,7 @@
 var headers = require('../');
 var connect = require('connect');
 var request = require('supertest');
+
 var defaultHeaders = {
   '/test1': {
     'Content-Type': 'mime/type'
@@ -13,8 +14,10 @@ var defaultHeaders = {
   }
 };
 
-describe.only('cors middleware', function() {
+describe('cors middleware', function() {
+  
   it('serves custom content types', function (done) {
+    
     var app = connect()
       .use(headers(defaultHeaders))
       .use(okay);
@@ -27,6 +30,7 @@ describe.only('cors middleware', function() {
   });
   
   it('serves custom access control headers', function (done) {
+    
     var app = connect()
       .use(headers(defaultHeaders))
       .use(okay);
@@ -39,6 +43,7 @@ describe.only('cors middleware', function() {
   });
   
   it('uses routing rules', function (done) {
+    
     var app = connect()
       .use(headers(defaultHeaders))
       .use(okay);
@@ -50,7 +55,25 @@ describe.only('cors middleware', function() {
       .end(done);
   });
   
+  it('uses glob negation to set headers' , function (done) {
+    
+    var app = connect()
+      .use(headers({
+        '!/anything/**': {
+          'custom-header': 'for testing'
+        }
+      }))
+      .use(okay);
+    
+    request(app)
+      .get('/something')
+      .expect(200)
+      .expect('custom-header', 'for testing')
+      .end(done);
+  });
+  
   function okay (req, res, next) {
+    
     res.writeHead(200);
     res.end();
   }
